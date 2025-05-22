@@ -105,8 +105,8 @@ prompt_and_run() {
 
     read -r -p "$prompt_msg [y/N]: " ans
     if [[ $ans =~ ^[Yy]$ ]]; then
-        local script
         script=$(find / -type f -name "$script_name" 2>/dev/null | head -n1 || true)
+        chmod +x "$script"
         [[ -x $script ]] || { echo "[!] ERROR: '$script_name' not found. Aborting."; exit 1; }
         bash "$script"
         echo "[+] Completed: $desc"
