@@ -40,6 +40,7 @@ run_script_if_needed() {
         # find the first matching script anywhere
         local script
         script=$(find / -type f -name "$script_name" 2>/dev/null | head -n1 || true)
+        chmod +x "$script"
         [[ -x $script ]] || { echo "[!] ERROR: '$script_name' not found or not executable. Aborting."; exit 1; }
         bash "$script"
         echo "[+] ${success_msg}"
@@ -128,6 +129,6 @@ prompt_and_run "Nginx reverse-proxy generation" "generate_nginx_configs.sh" \
 # Tailscale remote-access setup
 prompt_and_run "Tailscale setup" "tailscale-setup.sh" \
     "Configure Tailscale for remote access?"
-    
+
 echo "all your volumes in /srv/docker"
 echo "✔️ Homelab Startup Complete - All systems operational"
