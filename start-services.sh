@@ -128,5 +128,6 @@ prompt_and_run "Nginx reverse-proxy generation" "generate_nginx_configs.sh" \
 # Tailscale remote-access setup
 prompt_and_run "Tailscale setup" "tailscale-setup.sh" \
     "Configure Tailscale for remote access?"
-
+    
+echo "all your volumes in /srv/docker"
 echo "✔️ Homelab Startup Complete - All systems operational"
