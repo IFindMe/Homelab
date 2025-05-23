@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Service name for logging
-SERVICE_NAME_DB="mariadb"
+SERVICE_NAME_DB="mariadb-wikijs"
 
 # Configuration variables
 # Get the subnet from homelab-network and set last octet to 99
@@ -26,6 +26,7 @@ docker run -d \
   -e MARIADB_USER=wikijs \
   -e MARIADB_PASSWORD="(@Pass@:#./-)" \
   -e MARIADB_DATABASE=wikijs \
+  -e MARIADB_ROOT_PASSWORD="(@Pass@:#./-)" \
   -v $VOLUME_BASE_DB/var/lib/mysql:/var/lib/mysql \
   mariadb:latest
 

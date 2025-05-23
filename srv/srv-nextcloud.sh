@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Service name for logging
-SERVICE_NAME_DB="mariadb"
+SERVICE_NAME_DB="mariadb-nextcloud"
 
 # Configuration variables
 IP_ADDRESS_DB=$(docker network inspect homelab-network | jq -r '.[0].IPAM.Config[0].Subnet' | cut -d. -f1-3).44
@@ -21,6 +21,7 @@ docker run -d \
   -e MARIADB_USER=nextcloud \
   -e MARIADB_PASSWORD="my_(@Pass@:#./-)" \
   -e MARIADB_DATABASE=nextcloud_db \
+  -e MARIADB_ROOT_PASSWORD="(@Pass@:#./-)" \
   -v $VOLUME_BASE_DB/var/lib/mysql:/var/lib/mysql \
   mariadb:latest
 
