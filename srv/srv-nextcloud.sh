@@ -1,30 +1,49 @@
 #!/bin/bash
 
 # Service name for logging
-SERVICE_NAME="nextcloud"
+SERVICE_NAME_DB="mariadb"
 
 # Configuration variables
-# Get the subnet from homelab-network and set last octet to 4
+IP_ADDRESS_DB=$(docker network inspect homelab-network | jq -r '.[0].IPAM.Config[0].Subnet' | cut -d. -f1-3).44
+VOLUME_BASE_DB="/srv/docker/mariadb/mariadb-nextcloud"
+
+echo "Starting $SERVICE_NAME_DB service..."
+
+docker pull mariadb:latest
+docker stop $SERVICE_NAME_DB 2>/dev/null
+docker rm $SERVICE_NAME_DB 2>/dev/null
+
+docker run -d \
+  --name $SERVICE_NAME_DB \
+  --restart unless-stopped \
+  --network homelab-network \
+  --ip $IP_ADDRESS_DB \
+  -e MARIADB_USER=nextcloud \
+  -e MARIADB_PASSWORD="my_(@Pass@:#./-)" \
+  -e MARIADB_DATABASE=nextcloud_db \
+  -v $VOLUME_BASE_DB/var/lib/mysql:/var/lib/mysql \
+  mariadb:latest
+
+echo "$SERVICE_NAME_DB service started successfully!"
+
+
+# Nextcloud service
+SERVICE_NAME="nextcloud"
 IP_ADDRESS=$(docker network inspect homelab-network | jq -r '.[0].IPAM.Config[0].Subnet' | cut -d. -f1-3).4
 VOLUME_BASE="/srv/docker/nextcloud"
-DB_HOST=$(docker network inspect homelab-network | jq -r '.[0].IPAM.Config[0].Subnet' | cut -d. -f1-3).8
 
 echo "Starting $SERVICE_NAME service..."
 
-# Pull the latest image
 docker pull nextcloud:latest
-
-# Stop and remove existing container if it exists
 docker stop $SERVICE_NAME 2>/dev/null
 docker rm $SERVICE_NAME 2>/dev/null
 
-# Run the container
 docker run -d \
   --name $SERVICE_NAME \
   --restart unless-stopped \
   --network homelab-network \
   --ip $IP_ADDRESS \
-  -e MYSQL_HOST=$DB_HOST \
+  -e MYSQL_HOST=$IP_ADDRESS_DB \
   -e MYSQL_DATABASE=nextcloud_db \
   -e MYSQL_USER=nextcloud \
   -e MYSQL_PASSWORD="my_(@Pass@:#./-)" \
