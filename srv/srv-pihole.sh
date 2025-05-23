@@ -29,6 +29,7 @@ docker run -d \
   -p 53:53/tcp \
   -p 53:53/udp \
   -p 8080:80 \
+  -p 4430:443 \
   -v $VOLUME_BASE/etc/pihole:/etc/pihole \
   -v $VOLUME_BASE/etc/dnsmasq.d:/etc/dnsmasq.d \
   pihole/pihole:latest
