@@ -23,8 +23,7 @@ docker run -d \
   --restart unless-stopped \
   --network homelab-network \
   --ip $IP_ADDRESS \
-  -p 80:80 \
-  -p 443:443 \
+  -p 4433:443 \
   -v $VOLUME_BASE/etc/nginx/conf.d/:/etc/nginx/conf.d/ \
   nginx:latest
 
