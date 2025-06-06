@@ -2,6 +2,7 @@
 
 # ====== Configuration ======
 SERVICE_NAME="synapse"
+IP_ADDRESS=$(docker network inspect homelab-network | jq -r '.[0].IPAM.Config[0].Subnet' | cut -d. -f1-3).6
 IMAGE_NAME="matrixdotorg/synapse:latest"
 VOLUME_BASE="/srv/docker/$SERVICE_NAME"
 SERVER_NAME="matrix1.serdem.org"
@@ -23,7 +24,7 @@ docker run -it --rm \
   -v $VOLUME_BASE/data:/data \
   -e SYNAPSE_SERVER_NAME=matrix.home.net \
   -e SYNAPSE_REPORT_STATS=yes \
-  matrixdotorg/synapse:latest generate
+  $IMAGE_NAME
 
 
 # Run the container
@@ -33,8 +34,8 @@ docker run -d \
   -v $VOLUME_BASE/data:/data \
   -e SYNAPSE_SERVER_NAME=$SERVER_NAME \
   -e SYNAPSE_REPORT_STATS=yes \
-  -p $HOST_PORT:$CONTAINER_PORT \
-  --network $NETWORK_MODE \
+  --network homelab-network \
+  --ip $IP_ADDRESS \
   $IMAGE_NAME
 
 echo "$SERVICE_NAME service started successfully!"
